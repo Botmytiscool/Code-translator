@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODE TRANSLATOR</title>
+    <style>
+        /* Basic Styles for Login Page */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #ff0000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .login-container input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .login-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #ff0000;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .login-container button:hover {
+            background-color: #e60000;
+        }
+
+        /* Website Content Styles */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: white;
+        }
+
+        .tab-container {
+            margin-top: 20px;
+        }
+
+        .tab-button {
+            font-size: 18px;
+            padding: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        .tab-button:hover {
+            background-color: #e60000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        textarea {
+            width: 90%;
+            height: 150px;
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+            resize: none;
+        }
+
+        .output-box {
+            width: 90%;
+            height: 300px;
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+            resize: none;
+            background-color: #f1f1f1;
+            border: 2px solid #ccc;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .footer-text {
+            font-size: 40px;
+            color: white;
+            margin-top: 30px;
+            font-weight: bold;
+        }
+
+        /* Rickroll Video (Hidden by Default) */
+        .rickroll-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            color: white;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <h2>Enter Password</h2>
+        <input type="password" id="password" placeholder="Enter password here">
+        <button onclick="checkPassword()">Login</button>
+    </div>
+
+    <!-- Main Website Content -->
+    <div id="mainContent" style="display:none;">
+        <div class="container">
+            <h1>CODE TRANSLATOR</h1>
+            <div class="tab-container">
+                <button class="tab-button" onclick="showTab('encode')">Encode</button>
+                <button class="tab-button" onclick="showTab('decode')">Decode</button>
+            </div>
+
+            <div id="encode" class="tab-content active">
+                <h2>Encode (English to Code)</h2>
+                <textarea id="encodeInput" placeholder="Enter English text"></textarea>
+                <button onclick="encodeText()">Translate</button>
+                <textarea id="encodedOutput" class="output-box" readonly></textarea>
+            </div>
+
+            <div id="decode" class="tab-content">
+                <h2>Decode (Code to English)</h2>
+                <textarea id="decodeInput" placeholder="Enter code text"></textarea>
+                <button onclick="decodeText()">Translate</button>
+                <textarea id="decodedOutput" class="output-box" readonly></textarea>
+            </div>
+
+            <div class="footer-text">
+                WEBSITE MADE BY XANDER GAMA 4/2/2025
+            </div>
+        </div>
+
+        <!-- Rickroll Video -->
+        <div id="rickroll" class="rickroll-container">
+            <button class="close-btn" onclick="closeRickroll()">✖</button>
+            <video width="400" autoplay loop>
+                <source src="https://archive.org/download/rick-roll/rickroll.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        const shift = 3;
+
+        function showTab(tab) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+        }
+
+        function encodeText() {
+            const input = document.getElementById("encodeInput").value.trim();
+            checkForRickroll(input);
+            if (input === "") {
+                document.getElementById("encodedOutput").value = "Please enter some text!";
+                return;
+            }
+            let encoded = encode(input);
+            document.getElementById("encodedOutput").value = encoded;
+        }
+
+        function decodeText() {
+            const input = document.getElementById("decodeInput").value.trim();
+            checkForRickroll(input);
+            if (input === "") {
+                document.getElementById("decodedOutput").value = "Please enter some text!";
+                return;
+            }
+            let decoded = decode(input);
+            document.getElementById("decodedOutput").value = decoded;
+        }
+
+        function encode(str) {
+            let result = "";
+            for (let i = 0; i < str.length; i++) {
+                let char = str[i];
+                if (char.match(/[a-zA-Z]/)) {
+                    let code = str.charCodeAt(i);
+                    let base = (char === char.toLowerCase()) ? 97 : 65;
+                    result += String.fromCharCode((code - base + shift) % 26 + base);
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+
+        function decode(str) {
+            let result = "";
+            for (let i = 0; i < str.length; i++) {
+                let char = str[i];
+                if (char.match(/[a-zA-Z]/)) {
+                    let code = str.charCodeAt(i);
+                    let base = (char === char.toLowerCase()) ? 97 : 65;
+                    result += String.fromCharCode((code - base - shift + 26) % 26 + base);
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+
+        function checkForRickroll(text) {
+            if (text.includes("mintcraft")) {  
+                document.getElementById("rickroll").style.display = "block";
+            }
+        }
+
+        function closeRickroll() {
+            document.getElementById("rickroll").style.display = "none";
+        }
+
+        // Password Protection: Checking the password
+        const correctPassword = '1111'; // Password: 1111
+
+        function checkPassword() {
+            const enteredPassword = document.getElementById("password").value;
+            if (enteredPassword === correctPassword) {
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+            } else {
+                alert('Incorrect Password');
+            }
+        }
+    </script>
+</body>
+</html>
